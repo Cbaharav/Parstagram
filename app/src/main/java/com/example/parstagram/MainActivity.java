@@ -6,14 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +46,10 @@ public class MainActivity extends AppCompatActivity {
                 final String username = usernameInput.getText().toString();
                 final String password = passwordInput.getText().toString();
 
-                signup(username, password);
+                Intent i = new Intent(MainActivity.this, SignupActivity.class);
+                i.putExtra("username", username);
+                i.putExtra("password", password);
+                startActivity(i);
             }
         });
     }
@@ -72,26 +73,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signup(String username, String password) {
-        // create the new ParseUser
-        ParseUser user = new ParseUser();
-        // set core properties
-        user.setUsername(username);
-        user.setPassword(password);
+        Intent i = new Intent(MainActivity.this, SignupActivity.class);
+        i.putExtra("username", username);
+        i.putExtra("password", password);
 
-        user.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(MainActivity.this, usernameInput.getText().toString() + " is successfully signed up!", Toast.LENGTH_LONG).show();
-                    // after signing up, take user to the home page
-                    final Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Log.e("SignupActivity", "Sign up failure");
-                    e.printStackTrace();
-                }
-            }
-        });
+//        // create the new ParseUser
+//        ParseUser user = new ParseUser();
+//        // set core properties
+//        user.setUsername(username);
+//        user.setPassword(password);
+//
+//        user.signUpInBackground(new SignUpCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if (e == null) {
+//                    Toast.makeText(MainActivity.this, usernameInput.getText().toString() + " is successfully signed up!", Toast.LENGTH_LONG).show();
+//                    // after signing up, take user to the home page
+//                    final Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                } else {
+//                    Log.e("SignupActivity", "Sign up failure");
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 }
