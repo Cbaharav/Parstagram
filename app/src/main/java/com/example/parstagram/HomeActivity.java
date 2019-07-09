@@ -18,8 +18,6 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    MenuItem miLogout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
