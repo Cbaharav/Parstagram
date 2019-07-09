@@ -30,28 +30,35 @@ public class MainActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
         signupBtn = findViewById(R.id.signupBtn);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String username = usernameInput.getText().toString();
-                final String password = passwordInput.getText().toString();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            // means that user is already signed in
+            Intent i = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(i);
+        } else {
+            loginBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final String username = usernameInput.getText().toString();
+                    final String password = passwordInput.getText().toString();
 
-                login(username, password);
-            }
-        });
+                    login(username, password);
+                }
+            });
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String username = usernameInput.getText().toString();
-                final String password = passwordInput.getText().toString();
+            signupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final String username = usernameInput.getText().toString();
+                    final String password = passwordInput.getText().toString();
 
-                Intent i = new Intent(MainActivity.this, SignupActivity.class);
-                i.putExtra("username", username);
-                i.putExtra("password", password);
-                startActivity(i);
-            }
-        });
+                    Intent i = new Intent(MainActivity.this, SignupActivity.class);
+                    i.putExtra("username", username);
+                    i.putExtra("password", password);
+                    startActivity(i);
+                }
+            });
+        }
     }
 
     private void login(String username, String password) {
