@@ -9,7 +9,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.example.parstagram.fragments.ComposeFragment;
+import com.example.parstagram.fragments.PostsFragment;
 import com.example.parstagram.model.Post;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
@@ -26,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        final FragmentManager fragmentManager = getSupportFragmentManager();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         final Post.Query postsQuery = new Post.Query();
@@ -50,20 +55,29 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment fragment;
                 switch (item.getItemId()) {
                     case R.id.action_home:
+                        fragment = new PostsFragment();
                         Toast.makeText(HomeActivity.this, "Home!", Toast.LENGTH_SHORT).show();
-                        return true;
+                        break;
                     case R.id.action_compose:
+                        fragment = new ComposeFragment();
                         Toast.makeText(HomeActivity.this, "Compose!", Toast.LENGTH_SHORT).show();
-                        return true;
+                        break;
                     case R.id.action_profile:
+                        default:
+                        fragment = new ComposeFragment();
                         Toast.makeText(HomeActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
-                        return true;
-                    default: return true;
+                        break;
                 }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                return true;
             }
         });
+
+        // set default selection
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
     }
 
     @Override
