@@ -83,27 +83,5 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, SignupActivity.class);
         i.putExtra("username", username);
         i.putExtra("password", password);
-
-//        // create the new ParseUser
-//        ParseUser user = new ParseUser();
-//        // set core properties
-//        user.setUsername(username);
-//        user.setPassword(password);
-//
-//        user.signUpInBackground(new SignUpCallback() {
-//            @Override
-//            public void done(ParseException e) {
-//                if (e == null) {
-//                    Toast.makeText(MainActivity.this, usernameInput.getText().toString() + " is successfully signed up!", Toast.LENGTH_LONG).show();
-//                    // after signing up, take user to the home page
-//                    final Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Log.e("SignupActivity", "Sign up failure");
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
     }
 }
