@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.parstagram.EndlessRecyclerViewScrollListener;
 import com.example.parstagram.PostsAdapter;
 import com.example.parstagram.R;
 import com.example.parstagram.model.Post;
@@ -26,10 +28,12 @@ import java.util.List;
 public class PostsFragment extends Fragment {
 
     private RecyclerView rvPosts;
+
     // protected so that they can be accessed by ProfileFragment
     protected PostsAdapter adapter;
     protected List<Post> mPosts;
     protected SwipeRefreshLayout swipeContainer;
+    protected EndlessRecyclerViewScrollListener scrollListener;
 
     // onCreateView to inflate the view
     @Nullable
@@ -51,7 +55,19 @@ public class PostsFragment extends Fragment {
         // set the adapter on the recycler view
         rvPosts.setAdapter(adapter);
         // set the layout manager on the recycler view
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        rvPosts.setLayoutManager(linearLayoutManager);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Toast.makeText(getContext(), "infinite scrolling", Toast.LENGTH_LONG).show();
+                Log.d("Carmel", "Loading more");
+                queryPosts();
+            }
+        };
+
+        rvPosts.addOnScrollListener(scrollListener);
 
         // lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
@@ -60,6 +76,7 @@ public class PostsFragment extends Fragment {
             @Override
             public void onRefresh() {
                 adapter.clear();
+                mPosts.clear();
                 queryPosts();
             }
         });
@@ -73,7 +90,7 @@ public class PostsFragment extends Fragment {
         queryPosts();
     }
 
-    // protected allows it to be overrided in ProfileFragment
+    // protected allows it to be overriden in ProfileFragment
     protected void queryPosts() {
         ParseQuery<Post> postQuery = new ParseQuery<Post>(Post.class);
         postQuery.include(Post.KEY_USER);
@@ -81,6 +98,10 @@ public class PostsFragment extends Fragment {
         postQuery.setLimit(20);
         // posts will be returned in order from most recent to oldest
         postQuery.addDescendingOrder(Post.KEY_CREATED_AT);
+        // if not refreshing or loading initially, returns posts older than the last post currently loaded
+        if(mPosts.size() > 0) {
+            postQuery.whereLessThan(Post.KEY_CREATED_AT, mPosts.get(mPosts.size() - 1).getCreatedAt());
+        }
         postQuery.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
