@@ -75,7 +75,6 @@ public class ComposeFragment extends Fragment {
                 launchCamera();
             }
         });
-//        queryPosts();
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -193,7 +192,6 @@ public class ComposeFragment extends Fragment {
                 FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 Fragment fragment = new PostsFragment();
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
-                //etDescription.setText("");
             }
         });
     }

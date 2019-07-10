@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.parstagram.PostsAdapter;
 import com.example.parstagram.R;
@@ -28,6 +29,7 @@ public class PostsFragment extends Fragment {
     // protected so that they can be accessed by ProfileFragment
     protected PostsAdapter adapter;
     protected List<Post> mPosts;
+    protected SwipeRefreshLayout swipeContainer;
 
     // onCreateView to inflate the view
     @Nullable
@@ -50,6 +52,23 @@ public class PostsFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         // set the layout manager on the recycler view
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // set up refresh listener, triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                queryPosts();
+            }
+        });
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         queryPosts();
     }
@@ -78,6 +97,8 @@ public class PostsFragment extends Fragment {
                 for (int i = 0; i < posts.size(); i++) {
                     Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
                 }
+
+                swipeContainer.setRefreshing(false);
             }
         });
     }

@@ -40,6 +40,8 @@ public class ProfileFragment extends PostsFragment {
                 for (int i = 0; i < posts.size(); i++) {
                     Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
                 }
+
+                swipeContainer.setRefreshing(false);
             }
         });
     }

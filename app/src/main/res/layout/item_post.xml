@@ -33,7 +33,7 @@
         app:srcCompat="@color/design_default_color_primary" />
 
     <TextView
-        android:id="@+id/tvDescription"
+        android:id="@+id/tvSmallHandle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
