@@ -42,7 +42,7 @@ public class Post extends ParseObject implements Serializable {
         put(KEY_USER, user);
     }
 
-    public String getRelativeTimeAgo() {
+    public String getTime() {
         Date date = getCreatedAt();
         String format = "hh:mm, EEE MMM dd, yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(format, Locale.ENGLISH);
