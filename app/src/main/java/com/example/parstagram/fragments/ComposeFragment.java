@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,22 +44,18 @@ public class ComposeFragment extends Fragment {
     private Button btnCaptureImage;
     private ImageView ivPostImage;
     private Button btnSubmit;
+    private ProgressBar pb;
 
     public final String APP_TAG = "Parstagram";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
     private File photoFile;
 
-    // to get context inside of fragment use getContext()
-    // need getContext.getExternalFilesDir of getContext().getPackage...
-    // on activity result needs to be public in fragments
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_compose, container, false);
         // don't want to attach to the root because bottom navigation view takes care of this
-
     }
 
     @Override
@@ -68,6 +65,7 @@ public class ComposeFragment extends Fragment {
         btnCaptureImage = view.findViewById(R.id.btnCaptureImage);
         ivPostImage = view.findViewById(R.id.ivPostImage);
         btnSubmit = view.findViewById(R.id.btnSubmit);
+        pb = (ProgressBar) view.findViewById(R.id.pbLoading);
 
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +76,7 @@ public class ComposeFragment extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pb.setVisibility(ProgressBar.VISIBLE);
                 String description = etDescription.getText().toString();
                 ParseUser user = ParseUser.getCurrentUser();
                 if (photoFile == null || ivPostImage.getDrawable() == null) {
@@ -137,6 +136,7 @@ public class ComposeFragment extends Fragment {
                 Bitmap takenImage = rotateBitmapOrientation(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 ivPostImage.setImageBitmap(takenImage);
+                pb.setVisibility(ProgressBar.INVISIBLE);
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
