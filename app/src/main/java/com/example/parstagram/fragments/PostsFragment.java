@@ -25,8 +25,9 @@ import java.util.List;
 public class PostsFragment extends Fragment {
 
     private RecyclerView rvPosts;
-    private PostsAdapter adapter;
-    private List<Post> mPosts;
+    // protected so that they can be accessed by ProfileFragment
+    protected PostsAdapter adapter;
+    protected List<Post> mPosts;
 
     // onCreateView to inflate the view
     @Nullable
@@ -53,9 +54,14 @@ public class PostsFragment extends Fragment {
         queryPosts();
     }
 
-    private void queryPosts() {
+    // protected allows it to be overrided in ProfileFragment
+    protected void queryPosts() {
         ParseQuery<Post> postQuery = new ParseQuery<Post>(Post.class);
         postQuery.include(Post.KEY_USER);
+        // only want 20 posts back
+        postQuery.setLimit(20);
+        // posts will be returned in order from most recent to oldest
+        postQuery.addDescendingOrder(Post.KEY_CREATED_AT);
         postQuery.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
