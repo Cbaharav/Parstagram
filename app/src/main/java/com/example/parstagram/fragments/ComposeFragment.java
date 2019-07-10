@@ -20,20 +20,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.parstagram.R;
 import com.example.parstagram.model.Post;
-import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -81,7 +81,13 @@ public class ComposeFragment extends Fragment {
             public void onClick(View view) {
                 String description = etDescription.getText().toString();
                 ParseUser user = ParseUser.getCurrentUser();
-                savePost(description, user);
+                if (photoFile == null || ivPostImage.getDrawable() == null) {
+                    Log.e(APP_TAG, "No photo to submit");
+                    Toast.makeText(getContext(), "There is no photo to submit :(", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                btnSubmit.setClickable(false);
+                savePost(description, user, photoFile);
             }
         });
     }
@@ -138,6 +144,7 @@ public class ComposeFragment extends Fragment {
         }
     }
 
+    // rotates the image after it's taken so that it's oriented correctly in compose layout
     public Bitmap rotateBitmapOrientation(String photoFilePath) {
         // Create and configure BitmapFactory
         BitmapFactory.Options bounds = new BitmapFactory.Options();
@@ -166,11 +173,12 @@ public class ComposeFragment extends Fragment {
         return rotatedBitmap;
     }
 
-    private void savePost(String description, ParseUser parseUser) {
+    private void savePost(String description, ParseUser parseUser, File photoFile) {
         Post post = new Post();
         post.setDescription(description);
         post.setUser(parseUser);
-        // post.setImage();
+        post.setImage(new ParseFile(photoFile));
+
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -180,26 +188,12 @@ public class ComposeFragment extends Fragment {
                     e.printStackTrace();
                     return;
                 }
-                Log.d("save post", "Success!");
-                etDescription.setText("");
-            }
-        });
-    }
+                Toast.makeText(getContext(), "Posting!", Toast.LENGTH_LONG).show();
 
-    private void queryPosts() {
-        ParseQuery<Post> postQuery = new ParseQuery<Post>(Post.class);
-        postQuery.include(Post.KEY_USER);
-        postQuery.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null) {
-                    Log.e("querying posts", "error with query");
-                    e.printStackTrace();
-                    return;
-                }
-                for (int i = 0; i < posts.size(); i++) {
-                    Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
-                }
+                FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+                Fragment fragment = new PostsFragment();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                //etDescription.setText("");
             }
         });
     }

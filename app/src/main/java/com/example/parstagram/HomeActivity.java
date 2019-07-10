@@ -25,26 +25,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         final FragmentManager fragmentManager = getSupportFragmentManager();
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-//        final Post.Query postsQuery = new Post.Query();
-//        postsQuery.getTop().withUser();
-//
-//
-//        postsQuery.findInBackground(new FindCallback<Post>() {
-//            @Override
-//            public void done(List<Post> objects, ParseException e) {
-//                if (e == null) {
-//                    for (int i = 0; i < objects.size(); i++) {
-//                        Log.d("HomeActivity", "Post[" + i + "] = "
-//                                + objects.get(i).getDescription()
-//                                + "\nusername = " + objects.get(i).getUser().getUsername());
-//                    }
-//                } else {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -53,16 +34,13 @@ public class HomeActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         fragment = new PostsFragment();
-                        Toast.makeText(HomeActivity.this, "Home!", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.action_compose:
                         fragment = new ComposeFragment();
-                        Toast.makeText(HomeActivity.this, "Compose!", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.action_profile:
                         default:
                         fragment = new ComposeFragment();
-                        Toast.makeText(HomeActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
