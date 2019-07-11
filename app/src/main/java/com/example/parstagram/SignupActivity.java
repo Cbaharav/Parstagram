@@ -59,16 +59,36 @@ public class SignupActivity extends AppCompatActivity {
                     public void done(ParseException e) {
                         if (e == null) {
                             Toast.makeText(SignupActivity.this, username + " is successfully signed up!", Toast.LENGTH_LONG).show();
+                            Log.d("SignupActivity", "successful signup");
                             // after signing up, take user to the home page
                         } else {
                             Log.e("SignupActivity", "Sign up failure");
+                            Log.d("Stack Trace", Log.getStackTraceString(e));
                             e.printStackTrace();
                         }
 
                         finish();
                     }
                 });
+
+//                Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.default_profile)).getBitmap();
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                byte[] image = stream.toByteArray();
+//                ParseFile defaultProf = new ParseFile("default.png", image);
+//                user.put("profilePic", defaultProf);
+//
+//                user.saveInBackground(new SaveCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        if (e == null) {
+//                            Log.d("Carmel", "successful prof save");
+//                        }
+//                    }
+//                });
             }
         });
     }
+
+
 }

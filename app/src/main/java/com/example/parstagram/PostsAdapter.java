@@ -88,6 +88,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         .load(profPic.getUrl())
                         .apply(RequestOptions.circleCropTransform())
                         .into(ivProfPic);
+            } else {
+                Glide.with(context)
+                        .load(R.drawable.default_profile)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(ivProfPic);
             }
         }
 

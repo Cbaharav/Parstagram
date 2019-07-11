@@ -72,10 +72,17 @@ public class ProfileFragment extends Fragment {
 
         // set up profile picture & handle
         tvHandle.setText(ParseUser.getCurrentUser().getUsername());
-        Glide.with(getContext())
-                .load(ParseUser.getCurrentUser().getParseFile("profilePic").getUrl())
-                .apply(RequestOptions.circleCropTransform())
-                .into(ivProfPic);
+        if(ParseUser.getCurrentUser().getParseFile("profilePic") == null) {
+            Glide.with(getContext())
+                    .load(R.drawable.default_profile)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(ivProfPic);
+        } else {
+            Glide.with(getContext())
+                    .load(ParseUser.getCurrentUser().getParseFile("profilePic").getUrl())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(ivProfPic);
+        }
 
         // create the data source
         mPosts = new ArrayList<>();
@@ -167,7 +174,7 @@ public class ProfileFragment extends Fragment {
                     Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
                 }
 
-                // remove the refreshing icon
+                // remov
                 swipeContainer.setRefreshing(false);
             }
         });
