@@ -177,6 +177,7 @@ public class ComposeFragment extends Fragment {
         post.setDescription(description);
         post.setUser(parseUser);
         post.setImage(new ParseFile(photoFile));
+        post.setLikes();
 
         post.saveInBackground(new SaveCallback() {
             @Override

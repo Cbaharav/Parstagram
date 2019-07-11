@@ -7,7 +7,9 @@ import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @ParseClassName("Post")
@@ -17,6 +19,7 @@ public class Post extends ParseObject implements Serializable {
     public static final String KEY_USER = "user";
     public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_PROFILE_PIC = "profilePic";
+    public static final String KEY_LIKES = "likes";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -49,6 +52,23 @@ public class Post extends ParseObject implements Serializable {
 
     public void setProfilePic(ParseFile image) {
         getUser().put(KEY_CREATED_AT, image);
+    }
+
+    public void setLikes() {
+        List<ParseUser> likes = new ArrayList<>();
+        put(KEY_LIKES, likes);
+    }
+
+    public List<ParseUser> getLikes() {
+        return getList(KEY_LIKES);
+    }
+
+    public void addLike(ParseUser user) {
+        getLikes().add(user);
+    }
+
+    public void unLike(ParseUser user) {
+        getLikes().remove(user);
     }
 
 

@@ -78,10 +78,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void signup(String username, String password) {
-        Intent i = new Intent(MainActivity.this, SignupActivity.class);
-        i.putExtra("username", username);
-        i.putExtra("password", password);
-    }
 }

@@ -1,6 +1,10 @@
 package com.example.parstagram.fragments;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +26,16 @@ import com.example.parstagram.EndlessRecyclerViewScrollListener;
 import com.example.parstagram.ProfilePostsAdapter;
 import com.example.parstagram.R;
 import com.example.parstagram.model.Post;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +46,10 @@ public class ProfileFragment extends Fragment {
     private List<Post> mPosts;
     private SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private FloatingActionButton fab;
+    // PICK_PHOTO_CODE is a constant integer
+    public final static int PICK_PHOTO_CODE = 1046;
+    public String photoFileName = "photo.jpg";
 
     private ImageView ivProfPic;
     private TextView tvHandle;
@@ -55,6 +68,7 @@ public class ProfileFragment extends Fragment {
         rvPosts = view.findViewById(R.id.rvPosts);
         ivProfPic = view.findViewById(R.id.ivProfPic);
         tvHandle = view.findViewById(R.id.tvHandle);
+        fab = view.findViewById(R.id.fab);
 
         // set up profile picture & handle
         tvHandle.setText(ParseUser.getCurrentUser().getUsername());
@@ -102,6 +116,22 @@ public class ProfileFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        // on click of fab replace profile picture
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create intent for picking a photo from the gallery
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                // checking that the intent is safe to use
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    // Bring up gallery to select a photo
+                    startActivityForResult(intent, PICK_PHOTO_CODE);
+                }
+            }
+        });
+
         queryPosts();
     }
 
@@ -137,9 +167,52 @@ public class ProfileFragment extends Fragment {
                     Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
                 }
 
+                // remove the refreshing icon
                 swipeContainer.setRefreshing(false);
             }
         });
+    }
+
+    // handles returns from clicking on the fab to change profile picture
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null) {
+            // getting the uri from the selected image from camera roll
+            Uri picUri = data.getData();
+            Bitmap selectedImage;
+
+            // converting the uri data to bitmap
+            try {
+                selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), picUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            // loading new profile picture into profile page
+            Glide.with(getContext())
+                    .load(selectedImage)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(ivProfPic);
+
+            // converting bitmap image data to parseFile so it can be stored in parse
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] image = stream.toByteArray();
+            ParseFile newImageFile = new ParseFile(photoFileName, image);
+
+            // updating the profilePic field of the user parse object
+            ParseUser.getCurrentUser().put("profilePic", newImageFile);
+            ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Log.d("saving", "new prof pic");
+                }
+            });
+
+        } else {
+            Log.d("activity result", "error");
+        }
     }
 
 }
