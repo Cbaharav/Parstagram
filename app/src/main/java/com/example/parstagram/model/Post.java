@@ -16,6 +16,7 @@ public class Post extends ParseObject implements Serializable {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
     public static final String KEY_CREATED_AT = "createdAt";
+    public static final String KEY_PROFILE_PIC = "profilePic";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -41,6 +42,15 @@ public class Post extends ParseObject implements Serializable {
     public void setUser(ParseUser user) {
         put(KEY_USER, user);
     }
+
+    public ParseFile getProfilePic() {
+        return getUser().getParseFile(KEY_PROFILE_PIC);
+    }
+
+    public void setProfilePic(ParseFile image) {
+        getUser().put(KEY_CREATED_AT, image);
+    }
+
 
     public String getTime() {
         Date date = getCreatedAt();
