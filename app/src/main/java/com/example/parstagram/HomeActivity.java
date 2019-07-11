@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -24,6 +25,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActionBar bar = getSupportActionBar();
+        bar.setDisplayShowTitleEnabled(false);
         setContentView(R.layout.activity_home);
         final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.bottom_navigation);

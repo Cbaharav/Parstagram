@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
             // means that user is already signed in
             Intent i = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(i);
+            finish();
         } else {
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

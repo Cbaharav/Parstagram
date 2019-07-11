@@ -2,9 +2,11 @@ package com.example.parstagram;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +20,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.parstagram.fragments.DetailsFragment;
 import com.example.parstagram.model.Post;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -60,6 +65,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private ImageView ivImage;
         private TextView tvDescription;
         private ImageView ivProfPic;
+        private ImageButton btnLike;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,6 +73,29 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             ivImage = itemView.findViewById(R.id.ivImage);
             tvDescription = itemView.findViewById(R.id.tvSmallHandle);
             ivProfPic = itemView.findViewById(R.id.ivProfPic);
+            btnLike = itemView.findViewById(R.id.btnLike);
+            btnLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final int position = getAdapterPosition();
+                    Post post = posts.get(position);
+                    ParseUser user = ParseUser.getCurrentUser();
+                    if (post.hasLiked(user)) {
+                        post.unLike(user);
+                        notifyItemChanged(position);
+                    } else {
+                        post.addLike(user);
+                        notifyItemChanged(position);
+                    }
+                    post.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            Log.d("likes", "liking done");
+//                            notifyItemChanged(position);
+                        }
+                    });
+                }
+            });
             // setting onClickListener on the view (so items can have detail view)
             itemView.setOnClickListener(this);
         }
@@ -82,6 +111,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         .into(ivImage);
             }
 
+            // loading in profile picture if you have one, if not loads in the default image
             ParseFile profPic = post.getProfilePic();
             if (profPic != null) {
                 Glide.with(context)
@@ -93,6 +123,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         .load(R.drawable.default_profile)
                         .apply(RequestOptions.circleCropTransform())
                         .into(ivProfPic);
+            }
+
+            if (post.hasLiked(ParseUser.getCurrentUser())) {
+                btnLike.setImageResource(R.drawable.ufi_heart_active);
+                btnLike.setColorFilter(R.color.red);
+            } else {
+                btnLike.setImageResource(R.drawable.ufi_heart);
+                btnLike.setColorFilter(R.color.black);
             }
         }
 
