@@ -66,13 +66,10 @@ public class SignupActivity extends AppCompatActivity {
                             Log.d("Stack Trace", Log.getStackTraceString(e));
                             e.printStackTrace();
                         }
-
                         finish();
                     }
                 });
             }
         });
     }
-
-
 }

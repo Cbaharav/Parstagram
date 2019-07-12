@@ -64,6 +64,7 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
         }
 
         public void bind(Post post) {
+            // load in post images (this is all you see on profiles, the descriptions aren't shown)
             ParseFile image = post.getImage();
             if (image != null) {
                 Glide.with(context)
@@ -85,6 +86,7 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("post", post);
 
+                // if a post is clicked on, open detail view
                 FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                 Fragment fragment = new DetailsFragment();
                 fragment.setArguments(bundle);
@@ -96,12 +98,6 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
     // Clean all elements of the recycler
     public void clear() {
         posts.clear();
-        notifyDataSetChanged();
-    }
-
-    // Add a list of items -- change to type used
-    public void addAll(List<Post> list) {
-        posts.addAll(list);
         notifyDataSetChanged();
     }
 }

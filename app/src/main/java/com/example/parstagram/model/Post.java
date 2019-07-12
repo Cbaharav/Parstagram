@@ -104,6 +104,7 @@ public class Post extends ParseObject implements Serializable {
         });
     }
 
+    // returns whether or not inputted user has liked the post
     public boolean hasLiked(ParseUser user) {
         ArrayList<ParseUser> likes = getLikes();
         // iterate through the list of users that have liked the post
@@ -115,7 +116,7 @@ public class Post extends ParseObject implements Serializable {
         return false;
     }
 
-
+    // get and format when the post was created
     public String getTime() {
         Date date = getCreatedAt();
         String format = "hh:mm, EEE MMM dd, yyyy";

@@ -97,13 +97,10 @@ public class ComposeFragment extends Fragment {
         photoFile = getPhotoFileUri(photoFileName);
 
         // wrap File object into a content provider
-        // required for API >= 24
-        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
         Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
+        // checking that the intent is safe
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             // Start the image capture intent to take photo
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
@@ -112,17 +109,15 @@ public class ComposeFragment extends Fragment {
 
     // Returns the File for a photo stored on disk given the fileName
     public File getPhotoFileUri(String fileName) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
+        // get safe storage directory for photos
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
-        // Create the storage directory if it does not exist
+        // create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
             Log.d(APP_TAG, "failed to create directory");
         }
 
-        // Return the file target for the photo based on filename
+        // return the file target for the photo based on filename
         File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
 
         return file;
@@ -134,10 +129,10 @@ public class ComposeFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = rotateBitmapOrientation(photoFile.getAbsolutePath());
-                // Load the taken image into a preview
+                // load the taken image into a preview
                 ivPostImage.setImageBitmap(takenImage);
                 pb.setVisibility(ProgressBar.INVISIBLE);
-            } else { // Result was a failure
+            } else { // result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -145,13 +140,14 @@ public class ComposeFragment extends Fragment {
 
     // rotates the image after it's taken so that it's oriented correctly in compose layout
     public Bitmap rotateBitmapOrientation(String photoFilePath) {
-        // Create and configure BitmapFactory
+        // create and configure BitmapFactory
         BitmapFactory.Options bounds = new BitmapFactory.Options();
         bounds.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(photoFilePath, bounds);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         Bitmap bm = BitmapFactory.decodeFile(photoFilePath, opts);
-        // Read EXIF Data
+
+        // read EXIF Data
         ExifInterface exif = null;
         try {
             exif = new ExifInterface(photoFilePath);
@@ -172,11 +168,14 @@ public class ComposeFragment extends Fragment {
         return rotatedBitmap;
     }
 
+    // save the new post
     private void savePost(String description, ParseUser parseUser, File photoFile) {
+        // create new post and populate the fields based on user input
         Post post = new Post();
         post.setDescription(description);
         post.setUser(parseUser);
         post.setImage(new ParseFile(photoFile));
+        // initialize likes arrayList
         post.setLikes();
 
         post.saveInBackground(new SaveCallback() {
@@ -190,6 +189,7 @@ public class ComposeFragment extends Fragment {
                 }
                 Toast.makeText(getContext(), "Posting!", Toast.LENGTH_LONG).show();
 
+                // if post was successfully saved, switch to posts fragment
                 FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 Fragment fragment = new PostsFragment();
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();

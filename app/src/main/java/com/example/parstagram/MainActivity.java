@@ -32,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
-            // means that user is already signed in
+            // means that user is already signed in, user persistence
             Intent i = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(i);
             finish();
         } else {
+            // no user is signed in, either need to log in or create new account
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -53,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
                     final String username = usernameInput.getText().toString();
                     final String password = passwordInput.getText().toString();
 
+                    // creating intent and opening up SignupActivity
                     Intent i = new Intent(MainActivity.this, SignupActivity.class);
+                    // sending any inputted username and password to pre-populate the new activity
                     i.putExtra("username", username);
                     i.putExtra("password", password);
                     startActivity(i);
@@ -68,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException e) {
                 if (e == null) {
                     Log.d("LoginActivity", "Login Successful");
+                    // if login is successful, take user to the home page
                     final Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    // after logging in, take user to the home page
                     startActivity(intent);
                     finish();
                 } else {

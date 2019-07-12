@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,7 +60,6 @@ public class ProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
-
     // onViewCreated is after the view has been inflated
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -78,6 +76,7 @@ public class ProfileFragment extends Fragment {
                     .apply(RequestOptions.circleCropTransform())
                     .into(ivProfPic);
         } else {
+            // load default profile picture in if user hasn't uploaded one
             Glide.with(getContext())
                     .load(ParseUser.getCurrentUser().getParseFile("profilePic").getUrl())
                     .apply(RequestOptions.circleCropTransform())
@@ -94,15 +93,16 @@ public class ProfileFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         rvPosts.setLayoutManager(gridLayoutManager);
 
+        // set scrollListener to allow for endless scrolling
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Toast.makeText(getContext(), "infinite scrolling", Toast.LENGTH_LONG).show();
-                Log.d("Carmel", "Loading more");
+                // add an additional 20 posts, older than the ones currently shown
                 queryPosts();
             }
         };
 
+        // attach scroll listener to recyclerView
         rvPosts.addOnScrollListener(scrollListener);
 
         // lookup the swipe container view
@@ -139,6 +139,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        // initial population of profile
         queryPosts();
     }
 
@@ -174,7 +175,7 @@ public class ProfileFragment extends Fragment {
                     Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
                 }
 
-                // remov
+                // remove refreshing symbol
                 swipeContainer.setRefreshing(false);
             }
         });

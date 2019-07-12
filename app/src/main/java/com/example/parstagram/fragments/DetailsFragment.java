@@ -61,6 +61,7 @@ public class DetailsFragment extends Fragment {
         tvTime.setText(post.getTime());
         tvLikes.setText(Integer.toString(post.getLikes().size()));
 
+        // set initial image resource based on liked state
         if (post.hasLiked(ParseUser.getCurrentUser())) {
             btnLike.setImageResource(R.drawable.ufi_heart_active);
             btnLike.setColorFilter(Color.RED);
@@ -81,6 +82,7 @@ public class DetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ParseUser user = ParseUser.getCurrentUser();
+                // either like or unlike based on current like state
                 if (post.hasLiked(user)) {
                     post.unLike(user);
                 } else {
@@ -90,6 +92,7 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void done(ParseException e) {
                         Log.d("likes", "liking done");
+                        // set image button to appropriate resource (filled/unfilled heart) based on liked state
                         if (post.hasLiked(ParseUser.getCurrentUser())) {
                             btnLike.setImageResource(R.drawable.ufi_heart_active);
                             btnLike.setColorFilter(Color.RED);

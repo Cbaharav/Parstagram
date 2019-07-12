@@ -31,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+        // linking up items in bottomNavigationView to their respective fragments
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -52,13 +53,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        // set default selection
+        // set default selection to home fragment
         bottomNavigationView.setSelectedItemId(R.id.action_home);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // inflate the menu; this adds items to the action bar if it is present
+        // inflate the menu with the logout item
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return super.onCreateOptionsMenu(menu);
     }

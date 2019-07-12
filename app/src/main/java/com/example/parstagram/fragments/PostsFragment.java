@@ -90,7 +90,6 @@ public class PostsFragment extends Fragment {
         queryPosts();
     }
 
-    // protected allows it to be overriden in ProfileFragment
     protected void queryPosts() {
         ParseQuery<Post> postQuery = new ParseQuery<Post>(Post.class);
         postQuery.include(Post.KEY_USER);
@@ -112,6 +111,7 @@ public class PostsFragment extends Fragment {
                     return;
                 }
 
+                // add new posts to the list and notify adapter
                 mPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
 
@@ -120,6 +120,7 @@ public class PostsFragment extends Fragment {
                     Log.d("querying posts", "Post: " + posts.get(i).getDescription() + " username: " + posts.get(i).getUser().getUsername());
                 }
 
+                // stop the loading symbol
                 swipeContainer.setRefreshing(false);
             }
         });

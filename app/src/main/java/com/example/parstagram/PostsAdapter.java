@@ -79,6 +79,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             btnLike = itemView.findViewById(R.id.btnLike);
             tvLikes = itemView.findViewById(R.id.tvLikes);
 
+            // set onClickListener on the like button, and change like state appropriately
+            // notifyItemChanged so that the color of the like button is changed in bind
             btnLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -96,22 +98,23 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         @Override
                         public void done(ParseException e) {
                             Log.d("likes", "liking done");
-//                            notifyItemChanged(position);
                         }
                     });
                 }
             });
-            // setting onClickListener on the view (so items can have detail view)
+            // setting onClickListener on the view (so posts can have detail view)
             itemView.setOnClickListener(this);
         }
 
         public void bind(Post post) {
             String username = post.getUser().getUsername();
             tvHandle.setText(username);
+            // bolding the username in each post
             String sourceString = "<b>" + username + "</b> " + post.getDescription();
             tvDescription.setText(Html.fromHtml(sourceString));
             tvLikes.setText(Integer.toString(post.getLikes().size()));
 
+            // load the post's image in
             ParseFile image = post.getImage();
             if (image != null) {
                 Glide.with(context)
@@ -133,6 +136,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         .into(ivProfPic);
             }
 
+            // setting like button to appropriate state
             if (post.hasLiked(ParseUser.getCurrentUser())) {
                 btnLike.setImageResource(R.drawable.ufi_heart_active);
                 btnLike.setColorFilter(Color.RED);
@@ -155,6 +159,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("post", post);
 
+                // if a post is clicked on, switches to the detail fragment for that post
                 FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                 Fragment fragment = new DetailsFragment();
                 fragment.setArguments(bundle);
@@ -166,12 +171,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     // Clean all elements of the recycler
     public void clear() {
         posts.clear();
-        notifyDataSetChanged();
-    }
-
-    // Add a list of items -- change to type used
-    public void addAll(List<Post> list) {
-        posts.addAll(list);
         notifyDataSetChanged();
     }
 }
