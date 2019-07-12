@@ -46,7 +46,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented user stories:
+Here's a walkthrough of implemented user stories (when about to replace the profile picture, I realized that the emulator phone had no images in the camera roll, so I quickly paused the recording, took a picture with the emulator phone, and resumed the recording):
 
 <img src='https://github.com/Cbaharav/Parstagram/blob/master/walkthrough_parstagram.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
