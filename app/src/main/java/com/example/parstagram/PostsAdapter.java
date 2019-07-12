@@ -3,6 +3,7 @@ package com.example.parstagram;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,8 +106,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         }
 
         public void bind(Post post) {
-            tvHandle.setText(post.getUser().getUsername());
-            tvDescription.setText(post.getDescription());
+            String username = post.getUser().getUsername();
+            tvHandle.setText(username);
+            String sourceString = "<b>" + username + "</b> " + post.getDescription();
+            tvDescription.setText(Html.fromHtml(sourceString));
             tvLikes.setText(Integer.toString(post.getLikes().size()));
 
             ParseFile image = post.getImage();

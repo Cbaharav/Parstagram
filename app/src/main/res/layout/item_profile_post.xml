@@ -9,5 +9,6 @@
         android:id="@+id/ivPost"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@color/design_default_color_primary_dark" />
 </LinearLayout>

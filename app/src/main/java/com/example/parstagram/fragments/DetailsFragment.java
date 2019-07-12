@@ -1,10 +1,13 @@
 package com.example.parstagram.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +18,9 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.parstagram.R;
 import com.example.parstagram.model.Post;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class DetailsFragment extends Fragment {
 
@@ -23,6 +29,8 @@ public class DetailsFragment extends Fragment {
     private ImageView ivImage;
     private TextView tvDescription;
     private TextView tvTime;
+    private ImageButton btnLike;
+    private TextView tvLikes;
 
     @Nullable
     @Override
@@ -42,6 +50,8 @@ public class DetailsFragment extends Fragment {
         ivImage = view.findViewById(R.id.ivImage);
         tvDescription = view.findViewById(R.id.tvDescription);
         tvTime = view.findViewById(R.id.tvTime);
+        btnLike = view.findViewById(R.id.btnLike);
+        tvLikes = view.findViewById(R.id.tvLikes);
 
         // populate the views based on post details
         String username = post.getUser().getUsername();
@@ -49,6 +59,15 @@ public class DetailsFragment extends Fragment {
         String sourceString = "<b>" + username + "</b> " + post.getDescription();
         tvDescription.setText(Html.fromHtml(sourceString));
         tvTime.setText(post.getTime());
+        tvLikes.setText(Integer.toString(post.getLikes().size()));
+
+        if (post.hasLiked(ParseUser.getCurrentUser())) {
+            btnLike.setImageResource(R.drawable.ufi_heart_active);
+            btnLike.setColorFilter(Color.RED);
+        } else {
+            btnLike.setImageResource(R.drawable.ufi_heart);
+            btnLike.setColorFilter(Color.BLACK);
+        }
 
         // if there is an image with the post, load it into the image view
         if(post.getImage() != null) {
@@ -56,5 +75,32 @@ public class DetailsFragment extends Fragment {
                     .load(post.getImage().getUrl())
                     .into(ivImage);
         }
+
+        // set onClick listener for like button
+        btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseUser user = ParseUser.getCurrentUser();
+                if (post.hasLiked(user)) {
+                    post.unLike(user);
+                } else {
+                    post.addLike(user);
+                }
+                post.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("likes", "liking done");
+                        if (post.hasLiked(ParseUser.getCurrentUser())) {
+                            btnLike.setImageResource(R.drawable.ufi_heart_active);
+                            btnLike.setColorFilter(Color.RED);
+                        } else {
+                            btnLike.setImageResource(R.drawable.ufi_heart);
+                            btnLike.setColorFilter(Color.BLACK);
+                        }
+                        tvLikes.setText(Integer.toString(post.getLikes().size()));
+                    }
+                });
+            }
+        });
     }
 }
