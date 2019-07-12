@@ -52,7 +52,7 @@ Here's a walkthrough of implemented user stories:
 
 A second walkthrough because I forgot some things in the first:
 
-<https://github.com/Cbaharav/Parstagram/blob/master/walkthrough_parstagram2.gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough' />
+<img src ='https://github.com/Cbaharav/Parstagram/blob/master/walkthrough_parstagram2.gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
