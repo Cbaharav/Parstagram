@@ -1,6 +1,7 @@
 package com.example.parstagram;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +67,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private TextView tvDescription;
         private ImageView ivProfPic;
         private ImageButton btnLike;
+        private TextView tvLikes;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +76,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvDescription = itemView.findViewById(R.id.tvSmallHandle);
             ivProfPic = itemView.findViewById(R.id.ivProfPic);
             btnLike = itemView.findViewById(R.id.btnLike);
+            tvLikes = itemView.findViewById(R.id.tvLikes);
+
             btnLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -103,6 +107,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void bind(Post post) {
             tvHandle.setText(post.getUser().getUsername());
             tvDescription.setText(post.getDescription());
+            tvLikes.setText(Integer.toString(post.getLikes().size()));
 
             ParseFile image = post.getImage();
             if (image != null) {
@@ -127,10 +132,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
             if (post.hasLiked(ParseUser.getCurrentUser())) {
                 btnLike.setImageResource(R.drawable.ufi_heart_active);
-                btnLike.setColorFilter(R.color.red);
+                btnLike.setColorFilter(Color.RED);
             } else {
                 btnLike.setImageResource(R.drawable.ufi_heart);
-                btnLike.setColorFilter(R.color.black);
+                btnLike.setColorFilter(Color.BLACK);
             }
         }
 

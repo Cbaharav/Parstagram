@@ -76,10 +76,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/btnLike"
+        android:background="@null"
+        app:layout_constraintStart_toEndOf="@+id/tvLikes"
         app:layout_constraintTop_toBottomOf="@+id/ivImage"
-        app:srcCompat="@drawable/ufi_comment"
-        android:background="@null"/>
+        app:srcCompat="@drawable/ufi_comment" />
 
     <ImageButton
         android:id="@+id/imageButton5"
@@ -104,5 +104,16 @@
         app:layout_constraintTop_toBottomOf="@+id/ivImage"
         app:srcCompat="@drawable/ufi_save"
         android:background="@null"/>
+
+    <TextView
+        android:id="@+id/tvLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/btnLike"
+        app:layout_constraintTop_toBottomOf="@+id/ivImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
